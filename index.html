@@ -12,6 +12,9 @@
 <meta property="og:description" content="AI 시대의 First Value 관점 — Intent-first, System-as-Translator, Progressive." />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet" />
 <style>
   :root {
     --blue: #1b59ad;
@@ -26,6 +29,8 @@
     --dark-soft: #a7abb2;
     --dark-faint: #6a6e76;
     --sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+    --script: 'Caveat', cursive;
+    --serif: 'Newsreader', Georgia, serif;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; background: #000; font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
@@ -132,6 +137,28 @@
   .steps .k { color: var(--ink-faint); font-weight: 700; min-width: 92px; font-size: clamp(13px,1.3vw,18px); }
   .s-dark .steps .k, .s-navy .steps .k { color: var(--dark-faint); }
   .steps .v { font-size: clamp(14px,1.5vw,21px); }
+
+  /* hangtag (handwritten eyebrow) + ruled title */
+  .hangtag { font-family: var(--script); font-size: clamp(24px,2.6vw,38px); line-height: 1;
+    color: var(--ink-faint); display: inline-block; transform: rotate(-3deg); transform-origin: left bottom; margin: 0 0 4px 2px; }
+  .s-dark .hangtag, .s-navy .hangtag, .s-blue .hangtag { color: rgba(255,255,255,.55); }
+  h2.ruled { padding-bottom: clamp(16px,1.9vw,28px); border-bottom: 1px solid var(--line-light); max-width: 1180px; }
+  .s-dark h2.ruled { border-bottom-color: rgba(255,255,255,.16); }
+
+  /* 3 columns (editorial) */
+  .cols3 { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(22px,3vw,58px); margin-top: clamp(26px,3.2vw,48px); max-width: 1180px; }
+  .cols3 .cnum { font-family: var(--serif); font-size: clamp(22px,2vw,32px); line-height: 1; color: var(--ink); }
+  .cols3 .ctit { font-size: clamp(19px,2vw,28px); font-weight: 700; letter-spacing: -0.01em; margin: 10px 0 14px;
+    padding-bottom: clamp(12px,1.4vw,18px); border-bottom: 1px solid var(--line-light); }
+  .cols3 .cdesc { font-size: clamp(13px,1.4vw,18px); color: var(--ink-soft); line-height: 1.55; }
+
+  /* flow rows (editorial) */
+  .flowrows { margin-top: clamp(22px,2.6vw,40px); max-width: 1180px; }
+  .flowrows .frow { display: flex; gap: clamp(20px,3vw,52px); align-items: baseline; padding: clamp(14px,1.7vw,22px) 0; border-top: 1px solid var(--line-light); }
+  .flowrows .frow:last-child { border-bottom: 1px solid var(--line-light); }
+  .flowrows .fk { font-family: var(--serif); font-size: clamp(17px,1.7vw,25px); min-width: 116px; flex: 0 0 auto; }
+  .flowrows .ft { font-size: clamp(16px,1.6vw,22px); font-weight: 700; letter-spacing: -0.01em; }
+  .flowrows .fd { font-size: clamp(13px,1.4vw,18px); color: var(--ink-soft); margin-top: 5px; line-height: 1.5; }
 
   /* 3 cards */
   .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(20px,2.6vw,46px); margin-top: clamp(28px,3.4vw,52px); max-width: 1180px; }
@@ -297,32 +324,35 @@
 
   <!-- 15 INSIGHT 3 -->
   <section class="slide s-white">
-    <div class="label">Insight</div>
-    <h2 class="reveal" style="margin-top:clamp(40px,5vw,80px)">에어브릿지에 녹일 수 있는 3가지</h2>
-    <div class="cards reveal">
-      <div class="card"><div class="cn">1</div><div class="ct">Intent-first</div><div class="cd">사용자에게 입력을 받지 말고, 의도를 묻는다.</div></div>
-      <div class="card"><div class="cn">2</div><div class="ct">System-as-Translator</div><div class="cd">도메인 지식을 사용자에게 학습시키지 말고, 시스템 안에 담는다.</div></div>
-      <div class="card"><div class="cn">3</div><div class="ct">Progressive</div><div class="cd">처음엔 단순하게, 복잡한 건 필요할 때만 펼친다.</div></div>
+    <div class="label">Direction <b>우리의 3원칙</b></div>
+    <div class="hangtag reveal">Insight</div>
+    <h2 class="ruled reveal">에어브릿지에 녹일 수 있는 3가지</h2>
+    <div class="cols3 reveal">
+      <div class="col"><div class="cnum">1</div><div class="ctit">Intent-first</div><div class="cdesc">사용자에게 입력을 받지 말고,<br/>의도를 묻는다</div></div>
+      <div class="col"><div class="cnum">2</div><div class="ctit">System-as-Translator</div><div class="cdesc">도메인 지식을 사용자에게 학습시키지 말고,<br/>시스템 안에 담는다</div></div>
+      <div class="col"><div class="cnum">3</div><div class="ctit">Progressive</div><div class="cdesc">처음엔 단순하게,<br/>복잡한 건 필요할 때만 펼친다</div></div>
     </div>
   </section>
 
   <!-- 16 FLOW -->
   <section class="slide s-white">
-    <div class="label">Flow</div>
-    <h2 class="reveal">사용자는 의도만 던지고, Pilot이 21개를 채운다</h2>
-    <div class="steps lines reveal">
-      <div class="row"><span class="k">Flow 1</span><span class="v">사용자 의도 입력 — “인스타에 여름 세일 캠페인 링크 만들고 싶어요”</span></div>
-      <div class="row"><span class="k">Flow 2</span><span class="v">맥락 분석 — 이전 캠페인 · 채널 특성 · 시즌 패턴을 Pilot이 파악</span></div>
-      <div class="row"><span class="k">Flow 3</span><span class="v">유사 캠페인 매칭 — “작년 7월 운영하셨던 것처럼 만들까요?”</span></div>
-      <div class="row"><span class="k">Flow 4</span><span class="v">링크 자동 생성 — 사용자는 의도만, Pilot이 21개 필드를 채운다</span></div>
+    <div class="label">Direction <b>트래킹링크와 파일럿</b></div>
+    <div class="hangtag reveal">Flow</div>
+    <h2 class="ruled reveal">사용자는 의도만 던지고, Pilot이 21개 필드를 채운다</h2>
+    <div class="flowrows reveal">
+      <div class="frow"><span class="fk">Flow 1</span><div class="fc"><div class="ft">사용자 의도 입력</div><div class="fd">“인스타에 여름 세일 캠페인 링크 만들고 싶어요”</div></div></div>
+      <div class="frow"><span class="fk">Flow 2</span><div class="fc"><div class="ft">맥락 분석</div><div class="fd">이전 캠페인 · 채널 특성 · 시즌 패턴을 Pilot이 파악한다</div></div></div>
+      <div class="frow"><span class="fk">Flow 3</span><div class="fc"><div class="ft">유사 캠페인 매칭</div><div class="fd">“작년 7월 운영하셨던 것처럼 만들까요?”</div></div></div>
+      <div class="frow"><span class="fk">Flow 4</span><div class="fc"><div class="ft">링크 자동 생성</div><div class="fd">사용자는 의도만 던지고, Pilot이 21개 필드를 채운다</div></div></div>
     </div>
     <div class="foot-note reveal">* Pilot은 에어브릿지 제품에 내장된 자체 AI 에이전트입니다.</div>
   </section>
 
   <!-- 17 IDEATION -->
   <section class="slide s-white">
-    <div class="label">Ideation</div>
-    <h2 class="reveal">이미 운영하던 패턴이 있다면,<br/>Pilot이 먼저 제안할 수도 있다</h2>
+    <div class="label">Direction <b>먼저 제안하는 Pilot</b></div>
+    <div class="hangtag reveal">Ideation</div>
+    <h2 class="ruled reveal">이미 운영하던 패턴이 있다면, Pilot이 먼저 제안할 수도 있다</h2>
     <div class="quote reveal" style="font-size:clamp(20px,2.4vw,34px);margin-top:clamp(26px,3vw,44px);color:var(--ink-soft);max-width:980px">“작년 5월 인스타 캠페인이 효율이 좋았어요.<br/>이번에도 비슷하게 가시겠어요?”</div>
   </section>
 
