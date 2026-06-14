@@ -8,417 +8,342 @@
 <meta property="og:title" content="우리는 왜 유저에게 공부를 시키고 있을까?" />
 <meta property="og:description" content="AI 시대의 First Value 관점 — Intent-first, System-as-Translator, Progressive." />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0b0c0e;
-    --bg-2: #121419;
-    --ink: #f4f5f7;
-    --ink-soft: #aeb4bd;
-    --ink-faint: #6b7078;
-    --line: rgba(255,255,255,0.10);
-    --accent: #3b82f6;
-    --accent-soft: #8fb6ff;
-    --sans: 'Pretendard', -apple-system, sans-serif;
-    --serif: 'Newsreader', 'Fraunces', serif;
+    --blue: #1b59ad;
+    --blue-deep: #134a96;
+    --ink: #16181c;
+    --ink-soft: #5c6066;
+    --ink-faint: #9aa0a8;
+    --line-light: #e4e7ec;
+    --white: #ffffff;
+    --dark: #0a0a0c;
+    --dark-ink: #f3f4f6;
+    --dark-soft: #a7abb2;
+    --dark-faint: #6a6e76;
+    --sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #000; font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
-    -webkit-font-smoothing: antialiased;
-    overflow: hidden;
-  }
-
-  /* ---------- Atmosphere ---------- */
-  .grain {
-    position: fixed; inset: 0; z-index: 9;
-    pointer-events: none; opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* ---------- Deck ---------- */
   .deck { position: fixed; inset: 0; }
 
   .slide {
     position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    justify-content: center;
-    padding: clamp(40px, 8vw, 130px);
-    opacity: 0; visibility: hidden;
-    transform: scale(1.012);
-    transition: opacity .55s ease, transform .55s ease, visibility .55s;
-    background: radial-gradient(120% 90% at 18% 0%, var(--bg-2) 0%, var(--bg) 60%);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: clamp(40px, 7vw, 110px);
+    opacity: 0; visibility: hidden; transform: translateX(24px);
+    transition: opacity .5s ease, transform .5s ease, visibility .5s;
   }
-  .slide.active { opacity: 1; visibility: visible; transform: scale(1); z-index: 2; }
-  .slide.active .reveal { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
-  .slide.active .reveal:nth-child(2){ animation-delay:.08s }
-  .slide.active .reveal:nth-child(3){ animation-delay:.16s }
-  .slide.active .reveal:nth-child(4){ animation-delay:.24s }
-  .slide.active .reveal:nth-child(5){ animation-delay:.32s }
-  .slide.active .reveal:nth-child(6){ animation-delay:.40s }
+  .slide.active { opacity: 1; visibility: visible; transform: none; z-index: 2; }
+  .slide.active .reveal { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+  .slide.active .reveal:nth-child(2){animation-delay:.06s}
+  .slide.active .reveal:nth-child(3){animation-delay:.12s}
+  .slide.active .reveal:nth-child(4){animation-delay:.18s}
+  .slide.active .reveal:nth-child(5){animation-delay:.24s}
+  .slide.active .reveal:nth-child(6){animation-delay:.30s}
+  @keyframes rise { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform:none; } }
 
-  @keyframes rise { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform:none; } }
+  /* ---- backgrounds ---- */
+  .s-light { background: linear-gradient(180deg, #fcfeff 38%, #e2f1fe 100%); color: var(--ink); }
+  .s-white { background: #ffffff; color: var(--ink); }
+  .s-blue  { background: var(--blue); color: #fff; }
+  .s-dark  { background: var(--dark); color: var(--dark-ink); }
+  .s-navy  { background: linear-gradient(160deg, #34465e 0%, #1c2431 78%); color: #fff; }
+  .center  { align-items: center; text-align: center; }
 
-  /* ---------- Type ---------- */
-  .eyebrow {
-    font-family: var(--serif); font-style: italic;
-    font-size: clamp(15px, 1.5vw, 20px);
-    color: var(--ink-faint); letter-spacing: .01em;
-    margin-bottom: clamp(22px, 3vw, 40px);
-  }
-  .eyebrow .dot { color: var(--accent-soft); }
+  /* ---- label ---- */
+  .label { position: absolute; top: clamp(34px,5vw,64px); left: clamp(40px,7vw,110px);
+           font-size: clamp(12px,1.1vw,15px); color: var(--ink-faint); font-weight: 500; letter-spacing: .01em; }
+  .s-dark .label, .s-navy .label, .s-blue .label { color: rgba(255,255,255,.45); }
+  .label b { color: var(--ink); font-weight: 700; margin-left: 8px; }
+  .s-dark .label b, .s-navy .label b, .s-blue .label b { color: #fff; }
+  .center .label { left: 0; right: 0; text-align: center; }
 
-  h1 {
-    font-size: clamp(34px, 5.6vw, 88px);
-    font-weight: 700; line-height: 1.12; letter-spacing: -0.02em;
-  }
-  h2 {
-    font-size: clamp(26px, 3.6vw, 54px);
-    font-weight: 650; line-height: 1.28; letter-spacing: -0.015em;
-  }
-  .lead {
-    font-size: clamp(20px, 2.5vw, 36px);
-    font-weight: 500; line-height: 1.4; color: var(--ink);
-    letter-spacing: -0.01em;
-  }
-  .sub {
-    margin-top: clamp(18px, 2vw, 30px);
-    font-size: clamp(15px, 1.5vw, 21px);
-    color: var(--ink-soft); font-weight: 400;
-  }
-  .mono-note {
-    margin-top: clamp(20px,2.4vw,34px);
-    font-size: clamp(12px,1.1vw,15px); color: var(--ink-faint);
-    font-weight: 400;
-  }
-  .hl { color: var(--accent-soft); }
-  .underline-accent {
-    background: linear-gradient(transparent 62%, rgba(59,130,246,.28) 62%);
-    padding: 0 .04em;
-  }
+  /* ---- type ---- */
+  h1 { font-size: clamp(34px,5.2vw,80px); font-weight: 700; line-height: 1.18; letter-spacing: -0.025em; }
+  h2 { font-size: clamp(25px,3.4vw,50px); font-weight: 700; line-height: 1.32; letter-spacing: -0.02em; }
+  .small-head { font-size: clamp(17px,1.9vw,27px); font-weight: 500; color: inherit; opacity: .9; }
+  .sub { margin-top: clamp(14px,1.6vw,24px); font-size: clamp(14px,1.5vw,21px); color: var(--ink-soft); font-weight: 400; }
+  .s-light .sub, .s-white .sub { color: var(--ink-soft); }
+  .foot-note { margin-top: clamp(18px,2vw,28px); font-size: clamp(11px,1vw,14px); color: var(--ink-faint); font-weight: 400; }
+  .s-dark .foot-note, .s-navy .foot-note { color: var(--dark-faint); }
 
-  /* giant number */
-  .giant {
-    font-family: var(--sans);
-    font-size: clamp(140px, 32vw, 460px);
-    font-weight: 800; line-height: .9; letter-spacing: -0.04em;
-    background: linear-gradient(180deg, #ffffff, #9aa3af);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .giant-cap { font-size: clamp(18px,2vw,30px); color: var(--ink-soft); font-weight:500; margin-top: 8px;}
+  u.acc, .acc { text-decoration: none; background-image: linear-gradient(currentColor,currentColor);
+    background-size: 100% 2px; background-repeat: no-repeat; background-position: 0 92%; padding-bottom: 2px; }
 
-  /* quote slides */
-  .quote {
-    font-size: clamp(26px, 3.8vw, 58px);
-    font-weight: 600; line-height: 1.3; letter-spacing: -0.02em;
-  }
-  .quote .mark { color: var(--ink-faint); }
+  .giant { font-size: clamp(150px,30vw,440px); font-weight: 800; line-height: .88; letter-spacing: -0.04em; }
+  .giant-cap { font-size: clamp(16px,1.9vw,27px); font-weight: 500; opacity: .82; }
 
-  /* ---------- Tables ---------- */
-  .grid-table { width: 100%; max-width: 1100px; border-collapse: collapse; margin-top: clamp(20px,2.5vw,34px); }
-  .grid-table th, .grid-table td {
-    text-align: left; padding: clamp(11px,1.4vw,18px) 14px;
-    border-bottom: 1px solid var(--line);
-    font-size: clamp(14px,1.45vw,20px);
-  }
-  .grid-table th { color: var(--ink-faint); font-weight: 500; font-size: clamp(12px,1.1vw,15px); }
-  .grid-table td:first-child { font-weight: 600; white-space: nowrap; }
-  .grid-table .num { color: var(--accent-soft); font-weight: 700; width: 70px; }
-  .grid-table .say { color: var(--ink); font-weight: 600; }
-  .blur { filter: blur(6px); user-select: none; opacity: .85; }
-  .lock-note {
-    display: inline-flex; align-items: center; gap: 8px;
-    margin-top: 22px; font-size: 13px; color: var(--ink-faint);
-    border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px;
-  }
+  .quote { font-size: clamp(26px,3.7vw,56px); font-weight: 700; line-height: 1.32; letter-spacing: -0.02em; }
+  .quote .mk { opacity: .35; }
 
-  /* ---------- Steps / process ---------- */
-  .steps { display: flex; flex-direction: column; gap: clamp(12px,1.4vw,18px); margin-top: clamp(24px,3vw,42px); max-width: 1000px; }
-  .step {
-    display: flex; align-items: baseline; gap: 18px;
-    font-size: clamp(15px,1.6vw,23px); color: var(--ink-soft);
-  }
-  .step b { color: var(--ink-faint); font-weight: 600; font-size: .8em; min-width: 92px; }
-  .step span { color: var(--ink); }
+  /* cover */
+  .cover-foot { position: absolute; bottom: clamp(34px,5vw,60px); left: clamp(40px,7vw,110px); right: clamp(40px,7vw,110px);
+    display: flex; justify-content: space-between; font-size: clamp(11px,1vw,13px); color: var(--ink-faint); }
 
-  /* ---------- 3-col cards ---------- */
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px,2vw,30px); margin-top: clamp(30px,3.5vw,52px); }
-  .card { border-top: 2px solid var(--accent); padding-top: 18px; }
-  .card .n { font-family: var(--serif); font-style: italic; color: var(--ink-faint); font-size: 18px; }
-  .card .t { font-size: clamp(18px,1.9vw,28px); font-weight: 700; margin: 10px 0 12px; letter-spacing:-0.01em; }
-  .card .d { font-size: clamp(13px,1.3vw,17px); color: var(--ink-soft); line-height: 1.5; }
+  /* ---- tables ---- */
+  table.t { width: 100%; max-width: 1180px; border-collapse: collapse; margin-top: clamp(20px,2.4vw,36px); }
+  table.t th { text-align: left; padding: 0 16px 14px; font-size: clamp(12px,1.15vw,16px); font-weight: 500; color: var(--ink-faint); }
+  table.t td { padding: clamp(13px,1.5vw,20px) 16px; border-top: 1px solid var(--line-light); font-size: clamp(14px,1.5vw,21px); vertical-align: middle; }
+  table.t tr:last-child td { border-bottom: 1px solid var(--line-light); }
+  .s-blue table.t td { border-top-color: rgba(255,255,255,.22); }
+  .s-blue table.t tr:last-child td { border-bottom-color: rgba(255,255,255,.22); }
+  .s-blue table.t th { color: rgba(255,255,255,.6); }
+  .s-dark table.t td { border-top-color: rgba(255,255,255,.12); }
+  .s-dark table.t tr:last-child td { border-bottom-color: rgba(255,255,255,.12); }
+  .s-dark table.t th { color: var(--dark-faint); }
+  td.situ { font-weight: 700; white-space: nowrap; width: 22%; }
+  td.dim { color: var(--ink-soft); }
+  .s-blue td.dim { color: rgba(255,255,255,.75); }
+  td.say { font-weight: 700; }
+  td.num { width: 70px; color: var(--blue); font-weight: 800; font-size: 1.15em; }
+  .s-dark td.num { color: #6ea8ff; }
+  td.rownum { width: 46px; font-weight: 800; font-size: 1.1em; opacity:.9; }
+  .blur { filter: blur(7px); user-select: none; opacity: .8; }
+  .lock { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px;
+    font-size: 13px; color: var(--dark-faint); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 7px 15px; }
 
-  .two-col { display:grid; grid-template-columns: 1fr 1fr; gap: clamp(30px,5vw,90px); margin-top: clamp(24px,3vw,44px); max-width: 1100px;}
-  .two-col .n { font-family: var(--serif); font-style: italic; color: var(--ink-faint); font-size: 20px; }
-  .two-col .t { font-size: clamp(20px,2.2vw,32px); font-weight: 700; margin: 6px 0 12px; }
-  .two-col .d { color: var(--ink-soft); font-size: clamp(14px,1.4vw,18px); line-height:1.55; }
+  /* split synth slide */
+  .split { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .split .band-top { flex: 0 0 36%; background: linear-gradient(180deg,#eef4fd,#dce8fa); color: var(--ink);
+    display: flex; align-items: center; padding: 0 clamp(40px,7vw,110px); }
+  .split .band-bot { flex: 1; background: var(--blue); color: #fff; padding: clamp(28px,4vw,56px) clamp(40px,7vw,110px); display:flex; flex-direction:column; justify-content:center; }
+  .split .band-top .quote { font-size: clamp(20px,2.9vw,42px); }
 
-  .turn-block { margin-top: clamp(26px,3vw,46px); }
+  /* dashed flow box */
+  .flowbox { margin-top: clamp(24px,3vw,44px); border: 1.5px dashed rgba(255,255,255,.28); border-radius: 18px;
+    padding: clamp(26px,3.4vw,48px) clamp(20px,3vw,40px); display: flex; flex-direction: column; align-items: center; gap: clamp(8px,1vw,14px); max-width: 1180px; }
+  .flowbox .fitem { font-size: clamp(14px,1.6vw,23px); text-align: center; color: #eef1f6; }
+  .flowbox .arr { color: rgba(255,255,255,.4); font-size: 18px; line-height: 1; }
 
-  /* ---------- Cover ---------- */
-  .cover h1 { font-size: clamp(40px, 7vw, 110px); }
-  .cover-meta { display:flex; gap: 28px; margin-top: clamp(30px,4vw,56px); color: var(--ink-faint); font-size: clamp(13px,1.2vw,16px); }
-  .cover-meta .serif { font-family: var(--serif); font-style: italic; }
+  /* steps (flow / value) */
+  .steps { display: flex; flex-direction: column; gap: clamp(10px,1.2vw,16px); margin-top: clamp(22px,2.8vw,40px); max-width: 1100px; }
+  .steps.lines .row { display:flex; gap:18px; align-items:baseline; padding: clamp(11px,1.3vw,17px) 0; border-top: 1px solid var(--line-light); }
+  .s-dark .steps.lines .row { border-top-color: rgba(255,255,255,.12); }
+  .steps.lines .row:last-child { border-bottom: 1px solid var(--line-light); }
+  .s-dark .steps.lines .row:last-child { border-bottom-color: rgba(255,255,255,.12); }
+  .steps .k { color: var(--ink-faint); font-weight: 700; min-width: 92px; font-size: clamp(13px,1.3vw,18px); }
+  .s-dark .steps .k, .s-navy .steps .k { color: var(--dark-faint); }
+  .steps .v { font-size: clamp(14px,1.5vw,21px); }
 
-  /* ---------- Chrome ---------- */
-  .topbar {
-    position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 20;
-    background: rgba(255,255,255,0.06);
-  }
-  .topbar .fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-soft)); width: 0; transition: width .5s cubic-bezier(.2,.7,.2,1); }
+  /* 3 cards */
+  .cards { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(20px,2.6vw,46px); margin-top: clamp(28px,3.4vw,52px); max-width: 1180px; }
+  .card .cn { font-size: clamp(20px,2vw,30px); font-weight: 800; color: var(--blue); }
+  .card .ct { font-size: clamp(18px,1.95vw,28px); font-weight: 700; margin: 6px 0 12px; letter-spacing:-0.01em; padding-top: 14px; border-top: 2px solid var(--ink); }
+  .card .cd { font-size: clamp(13px,1.35vw,17px); color: var(--ink-soft); line-height: 1.55; }
 
-  .counter {
-    position: fixed; bottom: clamp(22px,3vw,40px); left: clamp(28px,5vw,80px); z-index: 20;
-    font-family: var(--serif); font-style: italic; color: var(--ink-faint);
-    font-size: clamp(13px,1.2vw,16px); letter-spacing: .02em;
-  }
-  .counter b { color: var(--ink); font-style: normal; font-family: var(--sans); font-weight: 600; }
-
-  .hint {
-    position: fixed; bottom: clamp(22px,3vw,40px); right: clamp(28px,5vw,80px); z-index: 20;
-    color: var(--ink-faint); font-size: 12px; letter-spacing: .04em;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .hint kbd {
-    border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px;
-    font-family: var(--sans); font-size: 12px; color: var(--ink-soft);
-  }
-
-  .nav-zone { position: fixed; top:0; bottom:0; width: 22%; z-index: 15; cursor: pointer; }
+  /* chrome */
+  .topbar { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 30; background: rgba(0,0,0,.0); }
+  .topbar .fill { height: 100%; background: var(--blue); width: 0; transition: width .5s cubic-bezier(.2,.7,.2,1); }
+  .counter { position: fixed; bottom: clamp(22px,3vw,38px); left: clamp(28px,5vw,64px); z-index: 30; font-size: clamp(12px,1.1vw,15px); color: var(--ink-faint); font-variant-numeric: tabular-nums; mix-blend-mode: difference; }
+  .counter b { color: #fff; font-weight: 700; }
+  .hint { position: fixed; bottom: clamp(22px,3vw,38px); right: clamp(28px,5vw,64px); z-index: 30; font-size: 12px; color: #888; display: flex; gap: 8px; align-items: center; mix-blend-mode: difference; }
+  .hint kbd { border: 1px solid #666; border-radius: 5px; padding: 2px 7px; font-family: var(--sans); font-size: 11px; }
+  .nav-zone { position: fixed; top: 0; bottom: 0; width: 24%; z-index: 20; cursor: pointer; }
   .nav-zone.prev { left: 0; } .nav-zone.next { right: 0; }
 
-  .credit {
-    position: fixed; top: clamp(20px,3vw,34px); right: clamp(28px,5vw,80px); z-index: 20;
-    font-size: 12px; color: var(--ink-faint); letter-spacing:.06em; text-transform: uppercase;
-  }
-
-  @media (max-width: 720px) {
-    .cards { grid-template-columns: 1fr; gap: 18px; }
-    .two-col { grid-template-columns: 1fr; gap: 26px; }
+  @media (max-width: 760px) {
+    .cards { grid-template-columns: 1fr; gap: 16px; }
+    .card .ct { padding-top: 10px; }
+    td.situ { width: auto; }
     .hint { display: none; }
-    .slide { padding: 60px 28px; }
-    .step b { min-width: 64px; }
+    .slide { padding: 64px 26px; }
+    .label { top: 26px; left: 26px; }
   }
 </style>
 </head>
 <body>
-<div class="grain"></div>
 <div class="topbar"><div class="fill" id="fill"></div></div>
-<div class="credit">PME · AB180</div>
 
 <main class="deck" id="deck">
 
   <!-- 1 COVER -->
-  <section class="slide cover">
-    <div class="eyebrow reveal">PME Session <span class="dot">·</span> 2026.05.13</div>
-    <h1 class="reveal">우리는 왜<br/>유저에게 공부를<br/>시키고 있을까?</h1>
+  <section class="slide s-light">
+    <h1 class="reveal">우리는 왜<br/>유저에게 공부를 시키고 있을까?</h1>
     <div class="sub reveal">:: AI 시대의 First Value 관점</div>
-    <div class="cover-meta reveal"><span class="serif">Eunji Lee</span><span>Product Designer, Airbridge</span></div>
+    <div class="cover-foot reveal"><span>Eunji Lee · 2026.05.13</span><span>Copyright © AB180 All Rights Reserved</span></div>
   </section>
 
   <!-- 2 Q -->
-  <section class="slide">
-    <div class="eyebrow reveal">Intro</div>
+  <section class="slide s-dark center">
+    <div class="label">Intro</div>
     <h2 class="reveal">에어브릿지에서 트래킹 링크를 생성할 때,<br/>유저가 알아야 하는 개념은 몇 개일까요?</h2>
   </section>
 
   <!-- 3 BIG 21 -->
-  <section class="slide" style="align-items:center; text-align:center;">
+  <section class="slide s-dark center">
+    <div class="label">Intro</div>
     <div class="giant reveal">21</div>
-    <div class="giant-cap reveal">링크 하나를 만들기 위해 알아야 하는 개념의 수</div>
   </section>
 
-  <!-- 4 TABLE blurred -->
-  <section class="slide">
-    <div class="eyebrow reveal">Intro</div>
-    <h2 class="reveal"><span style="font-size:1.3em; font-weight:800;">21</span>개의 정체</h2>
-    <table class="grid-table reveal">
-      <thead><tr><th>영역</th><th>개수</th><th>개념</th></tr></thead>
+  <!-- 4 TABLE 21 (blurred) -->
+  <section class="slide s-dark">
+    <div class="label">Intro</div>
+    <h2 class="reveal"><span style="font-size:1.25em;font-weight:800;">21</span>개의 정체</h2>
+    <table class="t reveal">
+      <thead><tr><th>영역</th><th style="width:80px">개수</th><th>개념</th></tr></thead>
       <tbody>
-        <tr><td>채널 &amp; 파라미터</td><td class="num">9</td><td class="blur">통합/커스텀 채널 · utm_source · utm_campaign · utm_ad_group · utm_ad_creative · utm_content · utm_term · utm_medium · Sub ID</td></tr>
-        <tr><td>경로 &amp; 딥링크</td><td class="num">7</td><td class="blur">디바이스별 Fallback · Deep Link · URI Scheme · App Market 리다이렉트 · Custom Store Listing · App Store PPID · Airpage</td></tr>
-        <tr><td>링크 메타</td><td class="num">3</td><td class="blur">Short ID · OG Tag · OG 이미지/제목/설명</td></tr>
-        <tr><td>어트리뷰션</td><td class="num">2</td><td class="blur">리인게이지먼트 · 어트리뷰션 파라미터</td></tr>
+        <tr><td class="situ">채널 &amp; 파라미터</td><td class="num">9</td><td class="dim blur">통합/커스텀 채널 · utm_source · utm_campaign · utm_ad_group · utm_ad_creative · utm_content · utm_term · utm_medium · Sub ID</td></tr>
+        <tr><td class="situ">경로 &amp; 딥링크</td><td class="num">7</td><td class="dim blur">디바이스별 Fallback · Deep Link · URI Scheme · App Market 리다이렉트 · Custom Store Listing · App Store PPID · Airpage</td></tr>
+        <tr><td class="situ">링크 메타</td><td class="num">3</td><td class="dim blur">Short ID · OG Tag · OG 이미지/제목/설명</td></tr>
+        <tr><td class="situ">어트리뷰션</td><td class="num">2</td><td class="dim blur">리인게이지먼트 · 어트리뷰션 파라미터</td></tr>
       </tbody>
     </table>
-    <span class="lock-note reveal">🔒 내부 상세 항목은 블러 처리했습니다</span>
+    <span class="lock reveal">🔒 내부 상세 항목은 블러 처리했습니다</span>
   </section>
 
   <!-- 5 Q -->
-  <section class="slide">
-    <div class="eyebrow reveal">Intro</div>
+  <section class="slide s-dark center">
+    <div class="label">Intro</div>
     <h2 class="reveal">유저는 트래킹 링크 생성 대시보드에서,<br/>하고 싶었던 게 무엇일까?</h2>
   </section>
 
   <!-- 6 QUOTE -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <div class="quote reveal"><span class="mark">“</span>페이스북에서 여름 세일 캠페인 링크<br/>하나 만들고 싶다<span class="mark">”</span></div>
+  <section class="slide s-dark center">
+    <div class="label">Intro</div>
+    <div class="quote reveal"><span class="mk">“</span>페이스북에서 여름 세일 캠페인 링크<br/>하나 만들고 싶다<span class="mk">”</span></div>
   </section>
 
   <!-- 7 EQUATION -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <div class="lead reveal">그 한 문장을 위해 알아야 하는 개념의 수</div>
-    <div class="giant reveal" style="margin-top:10px;">21</div>
+  <section class="slide s-dark center">
+    <div class="label">Intro</div>
+    <div class="giant-cap reveal">페이스북 여름 세일 캠페인 링크 하나 만들기 위해 알아야 하는 개념의 수</div>
+    <div class="giant reveal" style="margin-top:6px">21</div>
   </section>
 
-  <!-- 8 PROCESS -->
-  <section class="slide">
-    <div class="eyebrow reveal">Direction</div>
-    <h2 class="reveal">그동안 우리는 <span class="hl">‘잘 입력받기’</span> 위한 고민을 했다</h2>
-    <div class="steps">
-      <div class="step reveal"><b>고민 1</b><span>트래킹 링크에 필요한 정보는 뭐지?</span></div>
-      <div class="step reveal"><b>고민 2</b><span>이걸 대시보드에 잘 구조화해서 입력받자</span></div>
-      <div class="step reveal"><b>고민 3</b><span>자꾸 틀리네? 왜 이렇게 자주 CSM 문의가 들어오지?</span></div>
-      <div class="step reveal"><b>고민 4</b><span>에러 문구, 노티피케이션을 띄워서 알려주자 · 유효성 확인 · 인코딩</span></div>
+  <!-- 8 DIRECTION / 고민 -->
+  <section class="slide s-navy">
+    <div class="label">Direction</div>
+    <h2 class="reveal">그동안 우리는 ‘잘 입력받기’ 위한 고민을 했다</h2>
+    <div class="flowbox reveal">
+      <div class="fitem">🤔 트래킹 링크에 필요한 정보는 뭐지?</div>
+      <div class="arr">↓</div>
+      <div class="fitem">🤔 이걸 대시보드에 잘 구조화해서 입력을 받자</div>
+      <div class="arr">↓</div>
+      <div class="fitem">🤔 자꾸 틀리네? 왜 이렇게 자주 CSM 문의가 들어오지?</div>
+      <div class="arr">↓</div>
+      <div class="fitem">🤔 에러 문구·노티피케이션을 띄워서 알려주자, 유효성 확인, 인코딩…</div>
     </div>
   </section>
 
   <!-- 9 TURN -->
-  <section class="slide">
-    <div class="lead reveal" style="color:var(--ink-soft)">필요한 정보를 잘 입력해야 의도한 마케팅을 할 수 있는 건 맞지만,</div>
-    <div class="turn-block">
-      <h2 class="reveal"><span class="underline-accent">누구나 앱을 만드는 시대에,</span><br/><span class="underline-accent">MMP를 처음 쓰는 사용자</span>도<br/>이 모든 개념을 빠르게 이해하고 잘 입력할 수 있을까?</h2>
-    </div>
+  <section class="slide s-dark">
+    <div class="small-head reveal" style="color:var(--dark-soft)">필요한 정보를 잘 입력해야 의도한 마케팅을 할 수 있는 건 맞지만,</div>
+    <h2 class="reveal" style="margin-top:clamp(24px,3vw,44px)"><span class="acc">누구나 앱을 만드는 시대에,</span><br/><span class="acc">MMP를 처음 쓰는 사용자</span>도<br/>이 모든 개념을 빠르게 이해하고 잘 입력할 수 있을까?</h2>
   </section>
 
-  <!-- 10 GOAL -->
-  <section class="slide" style="background:radial-gradient(120% 90% at 80% 100%, #16223f 0%, var(--bg) 62%);">
-    <div class="eyebrow reveal">이 세션의 목표</div>
-    <h2 class="reveal">누구나 앱을 만드는 <span class="hl">AI 시대</span>에,<br/><span class="hl">MMP를 처음 쓰는 사용자</span>가 빠르게 First&nbsp;Value를 느낄 수 있도록<br/>우리에게 필요한 <span class="underline-accent">사고의 전환</span>을 할 줄 안다.</h2>
+  <!-- 10 GOAL (blue) -->
+  <section class="slide s-blue">
+    <div class="label">Ideal State</div>
+    <div class="small-head reveal" style="opacity:.85">이 세션의 목표</div>
+    <h2 class="reveal" style="margin-top:clamp(26px,3.4vw,48px)"><span class="acc">누구나 앱을 만드는 AI 시대</span>에,<br/><span class="acc">MMP를 처음 쓰는 사용자</span>가 빠르게 First Value를 느낄 수 있도록<br/>우리에게 필요한 <span class="acc">사고의 전환</span>을 할 줄 안다.</h2>
   </section>
 
   <!-- 11 CONCEPT -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <div class="eyebrow reveal">우리에게 필요한 사고의 전환</div>
-    <h1 class="reveal">📢 번역 UX 장착하기</h1>
-    <div class="mono-note reveal">* ‘번역 UX’는 정식 용어가 아니라, 제가 쉽게 설명하려고 붙인 표현입니다.</div>
+  <section class="slide s-dark center">
+    <div class="small-head reveal" style="color:var(--dark-soft)">우리에게 필요한 사고의 전환</div>
+    <h1 class="reveal" style="margin-top:18px">📢 번역 UX 장착하기</h1>
+    <div class="foot-note reveal">* ‘번역 UX’는 정식 용어가 아니라, 쉽게 설명하려고 제가 붙인 표현입니다.</div>
   </section>
 
-  <!-- 12 TABLE input UX -->
-  <section class="slide">
-    <div class="eyebrow reveal">번역 UX, 그게 뭔데?</div>
-    <h2 class="reveal">우리가 지금 시키는 방식 <span style="color:var(--ink-faint); font-weight:500;">— 손님이 레시피를 직접 부르는 입력</span></h2>
-    <table class="grid-table reveal" style="max-width:980px;">
+  <!-- 12 TRANSLATE UX TABLE (white, single 3-col) -->
+  <section class="slide s-white">
+    <div class="label">Ideal State <b>번역 UX? 그게 뭔데?</b></div>
+    <table class="t reveal" style="margin-top:clamp(40px,6vw,90px)">
+      <thead><tr><th>상황</th><th>손님이 직접 시키는 방식 (입력 UX)</th><th>그냥 말하는 방식 (번역 UX)</th></tr></thead>
       <tbody>
-        <tr><td>떡볶이 🌶️</td><td style="color:var(--ink-soft)">“고추장 50g, 떡 10개, 어묵 3장…”</td></tr>
-        <tr><td>택시 🚕</td><td style="color:var(--ink-soft)">“직진 → 좌회전 → 100m 후 우회전…”</td></tr>
-        <tr><td>카페 ☕</td><td style="color:var(--ink-soft)">“원두 30g, 우유 70ml, 시럽 15ml…”</td></tr>
-        <tr><td>병원 💊</td><td style="color:var(--ink-soft)">“혈압약 0.5mg, 진통제 200mg 주세요”</td></tr>
-        <tr><td>에어브릿지</td><td style="color:var(--ink-soft)">“utm_source=instagram, deeplink=airbridge://…”</td></tr>
+        <tr><td class="situ">떡볶이 🌶️</td><td class="dim">“고추장 50g, 떡 10개, 어묵 3장…”</td><td class="say">“매운 떡볶이 1인분”</td></tr>
+        <tr><td class="situ">택시 🚕</td><td class="dim">“직진 → 좌회전 → 100m 후 우회전…”</td><td class="say">“강남역이요”</td></tr>
+        <tr><td class="situ">카페 ☕</td><td class="dim">“원두 30g, 우유 70ml, 시럽 15ml…”</td><td class="say">“라떼 한 잔이요”</td></tr>
+        <tr><td class="situ">병원 💊</td><td class="dim">“혈압약 0.5mg, 진통제 200mg 주세요”</td><td class="say">“머리 아파요”</td></tr>
+        <tr><td class="situ">에어브릿지</td><td class="dim">“utm_source=instagram, deeplink=airbridge://…”</td><td class="say">“인스타에 광고 링크 만들고 싶어요”</td></tr>
       </tbody>
     </table>
   </section>
 
-  <!-- 13 TABLE translate UX -->
+  <!-- 13 BENCHMARK SYNTH (split: light band + blue table) -->
   <section class="slide">
-    <div class="eyebrow reveal">번역 UX, 그게 뭔데?</div>
-    <h2 class="reveal">사람이 원래 말하는 방식 <span style="color:var(--accent-soft); font-weight:600;">— 의도만 던지는 번역</span></h2>
-    <table class="grid-table reveal" style="max-width:760px;">
-      <tbody>
-        <tr><td>떡볶이 🌶️</td><td class="say">“매운 떡볶이 1인분”</td></tr>
-        <tr><td>택시 🚕</td><td class="say">“강남역이요”</td></tr>
-        <tr><td>카페 ☕</td><td class="say">“라떼 한 잔이요”</td></tr>
-        <tr><td>병원 💊</td><td class="say">“머리 아파요”</td></tr>
-        <tr><td>에어브릿지</td><td class="say">“인스타에 광고 링크 만들고 싶어요”</td></tr>
-      </tbody>
-    </table>
+    <div class="split">
+      <div class="band-top">
+        <div class="label" style="color:var(--ink-faint)">다른 곳들은 어떻게 풀고 있을까? <b>Common Pattern</b></div>
+        <div class="quote reveal">“빈 화면 대신 시작점을 주고, 전문 지식을 시스템에 묻고, 결정의 수를 줄였다.”</div>
+      </div>
+      <div class="band-bot">
+        <table class="t s-blue-table" style="margin-top:0">
+          <thead><tr><th style="color:rgba(255,255,255,.6)">관점</th><th style="color:rgba(255,255,255,.6)">사용자에게 일어나는 변화</th></tr></thead>
+          <tbody style="color:#fff">
+            <tr><td style="border-top:1px solid rgba(255,255,255,.22)"><span class="rownum">1</span> 시작 장벽 감소</td><td class="dim" style="border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8)">“무엇부터 해야 하지?” 대신 “이걸 조금 고치면 되겠네.”</td></tr>
+            <tr><td style="border-top:1px solid rgba(255,255,255,.22)"><span class="rownum">2</span> 도메인 지식 대체</td><td class="dim" style="border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8)">전문지식 없이 첫 결과물을 만들 수 있다.</td></tr>
+            <tr><td style="border-top:1px solid rgba(255,255,255,.22)"><span class="rownum">3</span> 의사결정 축소</td><td class="dim" style="border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8)">인지 부담이 줄고, 속도가 빨라진다.</td></tr>
+            <tr><td style="border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22)"><span class="rownum">4</span> 학습 가이드</td><td class="dim" style="border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.8)">사용하면서 도메인 구조를 자연스럽게 학습한다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
-  <!-- 14 BENCH abstracted -->
-  <section class="slide">
-    <div class="eyebrow reveal">Benchmark</div>
-    <h2 class="reveal">이미 잘 풀고 있는 제품들의 공통점</h2>
-    <div class="sub reveal" style="max-width:760px;">설정이 아니라 <b style="color:var(--ink)">목적</b>부터 묻고, 빈 화면 대신 <b style="color:var(--ink)">시작점</b>을 주고, 전문 지식을 <b style="color:var(--ink)">시스템</b>에 맡긴다.</div>
+  <!-- 14 Q -->
+  <section class="slide s-dark center">
+    <div class="label">Direction</div>
+    <h2 class="reveal"><span class="mk" style="opacity:.4">“</span>파라미터<span class="mk" style="opacity:.4">”</span>가 뭔지도 모르는 유저가<br/>막힘없이 원하는 캠페인을 운영할 수 있을까?</h2>
+  </section>
+
+  <!-- 15 INSIGHT 3 -->
+  <section class="slide s-white">
+    <div class="label">Insight</div>
+    <h2 class="reveal" style="margin-top:clamp(40px,5vw,80px)">에어브릿지에 녹일 수 있는 3가지</h2>
     <div class="cards reveal">
-      <div class="card"><div class="t">Goal-first</div><div class="d">“무엇을 하려는지”부터 묻는 진입점. 목적에 맞는 것만 보여준다.</div></div>
-      <div class="card"><div class="t">Template-based</div><div class="d">빈 캔버스가 아니라, 좋은 시작점을 미리 제공한다.</div></div>
-      <div class="card"><div class="t">Layered</div><div class="d">복잡한 설정은 나중 레이어로 분리해 단계적으로.</div></div>
+      <div class="card"><div class="cn">1</div><div class="ct">Intent-first</div><div class="cd">사용자에게 입력을 받지 말고, 의도를 묻는다.</div></div>
+      <div class="card"><div class="cn">2</div><div class="ct">System-as-Translator</div><div class="cd">도메인 지식을 사용자에게 학습시키지 말고, 시스템 안에 담는다.</div></div>
+      <div class="card"><div class="cn">3</div><div class="ct">Progressive</div><div class="cd">처음엔 단순하게, 복잡한 건 필요할 때만 펼친다.</div></div>
     </div>
   </section>
 
-  <!-- 15 SYNTH -->
-  <section class="slide">
-    <div class="eyebrow reveal">Insight</div>
-    <h2 class="reveal">“빈 화면 대신 시작점을 주고,<br/>전문 지식을 시스템에 묻고, 결정의 수를 줄였다.”</h2>
-    <div class="steps reveal" style="margin-top:34px;">
-      <div class="step"><b>관점 1</b><span>시작 장벽 감소 — “이걸 어떻게 시작하지?” 대신 “이걸 조금 고치면 되겠네”</span></div>
-      <div class="step"><b>관점 2</b><span>도메인 지식 대체 — 전문지식 없이도 결과물을 만들 수 있다</span></div>
-      <div class="step"><b>관점 3</b><span>의사결정 축소 — 내려야 할 결정이 줄고, 속도가 빨라진다</span></div>
-      <div class="step"><b>관점 4</b><span>학습 가이드 — 쓰면서 도메인 구조를 자연스럽게 학습한다</span></div>
+  <!-- 16 FLOW -->
+  <section class="slide s-white">
+    <div class="label">Flow</div>
+    <h2 class="reveal">사용자는 의도만 던지고, Pilot이 21개를 채운다</h2>
+    <div class="steps lines reveal">
+      <div class="row"><span class="k">Flow 1</span><span class="v">사용자 의도 입력 — “인스타에 여름 세일 캠페인 링크 만들고 싶어요”</span></div>
+      <div class="row"><span class="k">Flow 2</span><span class="v">맥락 분석 — 이전 캠페인 · 채널 특성 · 시즌 패턴을 Pilot이 파악</span></div>
+      <div class="row"><span class="k">Flow 3</span><span class="v">유사 캠페인 매칭 — “작년 7월 운영하셨던 것처럼 만들까요?”</span></div>
+      <div class="row"><span class="k">Flow 4</span><span class="v">링크 자동 생성 — 사용자는 의도만, Pilot이 21개 필드를 채운다</span></div>
     </div>
+    <div class="foot-note reveal">* Pilot은 에어브릿지 제품에 내장된 자체 AI 에이전트입니다.</div>
   </section>
 
-  <!-- 16 Q -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <div class="eyebrow reveal" style="text-align:center;">Direction</div>
-    <h2 class="reveal"><span class="mark" style="color:var(--ink-faint)">“</span>파라미터<span class="mark" style="color:var(--ink-faint)">”</span>가 뭔지도 모르는 유저가<br/>막힘없이 원하는 캠페인을 운영할 수 있을까?</h2>
+  <!-- 17 IDEATION -->
+  <section class="slide s-white">
+    <div class="label">Ideation</div>
+    <h2 class="reveal">이미 운영하던 패턴이 있다면,<br/>Pilot이 먼저 제안할 수도 있다</h2>
+    <div class="quote reveal" style="font-size:clamp(20px,2.4vw,34px);margin-top:clamp(26px,3vw,44px);color:var(--ink-soft);max-width:980px">“작년 5월 인스타 캠페인이 효율이 좋았어요.<br/>이번에도 비슷하게 가시겠어요?”</div>
   </section>
 
-  <!-- 17 INSIGHT 3 -->
-  <section class="slide">
-    <div class="eyebrow reveal">Insight</div>
-    <h2 class="reveal">에어브릿지에 녹일 수 있는 3가지</h2>
-    <div class="cards reveal">
-      <div class="card"><div class="n">1</div><div class="t">Intent-first</div><div class="d">사용자에게 입력을 받지 말고, 의도를 묻는다.</div></div>
-      <div class="card"><div class="n">2</div><div class="t">System-as-Translator</div><div class="d">도메인 지식을 사용자에게 학습시키지 말고, 시스템 안에 담는다.</div></div>
-      <div class="card"><div class="n">3</div><div class="t">Progressive</div><div class="d">처음엔 단순하게, 복잡한 건 필요할 때만 펼친다.</div></div>
-    </div>
+  <!-- 18 VALUE -->
+  <section class="slide s-dark">
+    <div class="label">Value</div>
+    <div class="small-head reveal" style="color:var(--dark-soft)">우리는 그동안 유저를 학습시키려고 했다.</div>
+    <h2 class="reveal" style="margin-top:clamp(24px,3vw,44px)">누구나 앱을 만드는 AI 시대에,<br/>처음 쓰는 사용자가 빠르게 <span class="acc" style="color:#6ea8ff">First Value</span>를 느낄 수 있도록<br/>우리의 <span class="acc">사고를 전환하자.</span></h2>
   </section>
 
-  <!-- 18 FLOW -->
-  <section class="slide">
-    <div class="eyebrow reveal">Flow</div>
-    <h2 class="reveal">사용자는 의도만 던지고,<br/><span class="hl">Pilot</span>이 21개를 알아서 채운다</h2>
-    <div class="steps">
-      <div class="step reveal"><b>Flow 1</b><span>사용자 의도 입력 — “인스타에 여름 세일 캠페인 링크 만들고 싶어요”</span></div>
-      <div class="step reveal"><b>Flow 2</b><span>맥락 분석 — 이전 캠페인 · 채널 특성 · 시즌 패턴을 Pilot이 파악</span></div>
-      <div class="step reveal"><b>Flow 3</b><span>유사 캠페인 매칭 — “작년 7월 운영하셨던 것처럼 만들까요?”</span></div>
-      <div class="step reveal"><b>Flow 4</b><span>링크 자동 생성 — 사용자는 의도만, Pilot이 21개 필드를 채운다</span></div>
-    </div>
-    <div class="mono-note reveal">* Pilot은 에어브릿지 제품에 내장된 자체 AI 에이전트입니다.</div>
+  <!-- 19 BROADER -->
+  <section class="slide s-dark center">
+    <h2 class="reveal">이건 트래킹 링크 하나의 이야기가 아니다.<br/>모든 티켓, 모든 스쿼드가<br/>같은 Goal로 정렬되어야 한다.</h2>
   </section>
 
-  <!-- 19 IDEATION -->
-  <section class="slide">
-    <div class="eyebrow reveal">Ideation</div>
-    <h2 class="reveal">이미 운영하던 패턴이 있다면,<br/>Pilot이 <span class="hl">먼저 제안</span>할 수도 있다</h2>
-    <div class="quote reveal" style="font-size:clamp(20px,2.4vw,34px); margin-top:36px; color:var(--ink-soft); max-width:900px;">“작년 5월 인스타 캠페인이 효율이 좋았어요.<br/>이번에도 비슷하게 가시겠어요?”</div>
-  </section>
-
-  <!-- 20 VALUE -->
-  <section class="slide" style="background:radial-gradient(120% 90% at 20% 100%, #16223f 0%, var(--bg) 62%);">
-    <div class="eyebrow reveal">Value</div>
-    <div class="lead reveal" style="color:var(--ink-soft)">우리는 그동안 유저를 학습시키려고 했다.</div>
-    <div class="turn-block">
-      <h2 class="reveal">누구나 앱을 만드는 AI 시대에,<br/>처음 쓰는 사용자가 빠르게 <span class="hl">First Value</span>를 느낄 수 있도록<br/>우리의 <span class="underline-accent">사고를 전환하자.</span></h2>
-    </div>
-  </section>
-
-  <!-- 21 BROADER -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <h2 class="reveal">이건 트래킹 링크 하나의 이야기가 아니다.<br/>모든 티켓, 모든 스쿼드가<br/>같은 <span class="hl">Goal</span>로 정렬되어야 한다.</h2>
-  </section>
-
-  <!-- 22 CLOSE -->
-  <section class="slide" style="align-items:center; text-align:center;">
-    <div class="quote reveal"><span class="mark">“</span>여러분의 티켓에서,<br/>이 관점은 어떻게 적용될 수 있을까요?<span class="mark">”</span></div>
-    <div class="cover-meta reveal" style="justify-content:center; margin-top:44px;"><span class="serif">Eunji Lee</span><span>PME Session · Airbridge</span></div>
+  <!-- 20 CLOSE -->
+  <section class="slide s-dark center">
+    <div class="quote reveal"><span class="mk">“</span>여러분의 티켓에서,<br/>이 관점은 어떻게 적용될 수 있을까요?<span class="mk">”</span></div>
+    <div class="foot-note reveal" style="margin-top:40px">Eunji Lee · PME Session · Airbridge</div>
   </section>
 
 </main>
 
-<div class="nav-zone prev" id="prevZone" aria-label="이전"></div>
-<div class="nav-zone next" id="nextZone" aria-label="다음"></div>
-
-<div class="counter"><b id="cur">01</b> / <span id="total">22</span></div>
+<div class="nav-zone prev" id="prevZone"></div>
+<div class="nav-zone next" id="nextZone"></div>
+<div class="counter"><b id="cur">01</b> / <span id="total">20</span></div>
 <div class="hint"><kbd>←</kbd><kbd>→</kbd><span>또는 화면 좌우 클릭</span></div>
 
 <script>
@@ -428,36 +353,26 @@
   const total = document.getElementById('total');
   let i = 0;
   total.textContent = String(slides.length).padStart(2,'0');
-
-  function show(n) {
-    i = Math.max(0, Math.min(slides.length - 1, n));
-    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
-    fill.style.width = ((i + 1) / slides.length * 100) + '%';
-    cur.textContent = String(i + 1).padStart(2, '0');
-    location.hash = '#' + (i + 1);
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+    fill.style.width = ((i+1)/slides.length*100)+'%';
+    cur.textContent = String(i+1).padStart(2,'0');
+    location.hash = '#'+(i+1);
   }
-  function next() { show(i + 1); }
-  function prev() { show(i - 1); }
-
-  document.addEventListener('keydown', (e) => {
-    if (['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) { e.preventDefault(); next(); }
-    else if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
-    else if (e.key === 'Home') show(0);
-    else if (e.key === 'End') show(slides.length - 1);
+  const next=()=>show(i+1), prev=()=>show(i-1);
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='Home')show(0); else if(e.key==='End')show(slides.length-1);
   });
-  document.getElementById('nextZone').addEventListener('click', next);
-  document.getElementById('prevZone').addEventListener('click', prev);
-
-  // swipe
-  let sx = 0;
-  document.addEventListener('touchstart', e => sx = e.changedTouches[0].clientX, {passive:true});
-  document.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - sx;
-    if (Math.abs(dx) > 45) (dx < 0 ? next() : prev());
-  }, {passive:true});
-
-  const start = parseInt(location.hash.replace('#',''), 10);
-  show(Number.isFinite(start) && start > 0 ? start - 1 : 0);
+  document.getElementById('nextZone').addEventListener('click',next);
+  document.getElementById('prevZone').addEventListener('click',prev);
+  let sx=0;
+  document.addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});
+  document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>45)(dx<0?next():prev());},{passive:true});
+  const st=parseInt(location.hash.replace('#',''),10);
+  show(Number.isFinite(st)&&st>0?st-1:0);
 </script>
 </body>
 </html>
